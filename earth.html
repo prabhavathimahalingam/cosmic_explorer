@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Earth - Cosmic Explorer</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Enhanced Background & Global Styles */
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(45deg, #f3ec78, #af4261, #45a1ff, #ff9d6c);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(255, 165, 0, 0.5);
+    }
+    .feature {
+      margin-bottom: 40px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(255, 165, 0, 0.2);
+    }
+    .feature img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    /* Quiz Section */
+    .quiz {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .quiz button {
+      background: #ff6600;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .quiz button:hover {
+      background: #cc5200;
+    }
+    /* Card Grid Layout */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      transition: transform 0.3s, background-color 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    /* Timeline Styles */
+    .timeline {
+      border-left: 3px solid #4a90e2;
+      padding-left: 1rem;
+      margin-top: 1rem;
+    }
+    .timeline-item {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background-color: #4a90e2;
+      border-radius: 50%;
+      position: absolute;
+      left: -1.6rem;
+      top: 0.3rem;
+    }
+    /* Solar System Animation */
+    .solar-system {
+      position: relative;
+      width: 600px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    .sun {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(#ff8f00, #ff6f00);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 50px #ff6f00;
+    }
+    .earth-orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 250px;
+      height: 250px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: orbit 12s linear infinite;
+    }
+    .earth-planet {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      width: 25px;
+      height: 25px;
+      background: radial-gradient(#1a66ff, #003399);
+      border-radius: 50%;
+      cursor: pointer;
+      animation: rotate 6s linear infinite;
+    }
+    @keyframes orbit {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    /* Mission Gallery Styles */
+    .mission-gallery {
+      display: grid;
+      gap: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+    .mission-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .mission-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(255, 165, 0, 0.2);
+    }
+    .mission-image {
+      position: relative;
+      height: 250px;
+      overflow: hidden;
+    }
+    .mission-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(0.3);
+      transition: transform 0.5s;
+    }
+    .mission-card:hover img {
+      transform: scale(1.1);
+      filter: grayscale(0);
+    }
+    .mission-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 102, 0, 0.9);
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+    .mission-info {
+      padding: 20px;
+    }
+    .mission-stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+    .stat {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.9em;
+    }
+    .mission-button {
+      background: linear-gradient(45deg, #ff6600, #ff4500);
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 15px;
+      transition: transform 0.2s;
+    }
+    .mission-button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #ff4500, #ff3300);
+    }
+    /* Video Tour & Hotspots */
+    .video-tour {
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
+      margin: 20px 0;
+    }
+    .tour-hotspots {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .hotspot {
+      position: absolute;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .pulse {
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 165, 0, 0.5);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .info-box {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+    }
+    .hotspot:hover .info-box {
+      opacity: 1;
+    }
+    .tour-script {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .tour-script li {
+      margin: 10px 0;
+      padding: 10px;
+      border-left: 3px solid #ff6600;
+      transition: all 0.3s;
+    }
+    .tour-script li:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateX(10px);
+    }
+    /* Night Sky Mode */
+    .night-sky {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 1000;
+      display: none;
+    }
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    /* Exoplanet Comparison */
+    .exoplanet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .exoplanet-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      transition: transform 0.3s;
+    }
+    .exoplanet-card:hover {
+      transform: scale(1.05);
+    }
+    /* Fixed Gamification Panel */
+    .gamification-panel {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(244, 244, 249, 0.9);
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      font-family: Arial, sans-serif;
+      width: 120px;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+    .gamification-panel:hover {
+      width: 150px;
+      background-color: rgba(244, 244, 249, 1);
+    }
+    .gamification-panel h4 {
+      color: #333;
+      font-size: 1em;
+      margin-bottom: 10px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    /* Badge Styling */
+    .badge {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin: 5px auto;
+      background-color: #ddd;
+      border-radius: 50%;
+      transition: background-color 0.3s ease;
+      display: block;
+    }
+    /* Specific Badge Colors */
+    .explorer-badge {
+      background-color: #4caf50;
+    }
+    .researcher-badge {
+      background-color: #2196f3;
+    }
+    /* Points Styling */
+    #points {
+      font-size: 1.2em;
+      color: #ff5722;
+      font-weight: bold;
+      text-align: center;
+      display: block;
+      margin-top: 5px;
+    }
+    /* Night Sky Toggle Button */
+    .night-sky-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 101;
+      background: #333;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2em;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    /* Earth-specific Features */
+    .weather-simulator {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .weather-simulator img {
+      max-width: 300px;
+      transition: filter 0.5s;
+    }
+    .weather-slider {
+      width: 80%;
+      margin-top: 20px;
+    }
+    .live-feed {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 40px;
+    }
+    .live-feed iframe {
+      width: 100%;
+      height: 450px;
+      border-radius: 10px;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .gamification-panel {
+        display: none;
+      }
+      .solar-system {
+        width: 300px;
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Earth - Our Home Planet</h1>
+    
+    <!-- Feature 1: Real-Time Image -->
+    <div class="feature">
+      <h2>Real-Time Image of Earth</h2>
+      <img
+        id="earth-image"
+        src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg"
+        alt="Earth"
+      />
+    </div>
+
+    <!-- Feature 2: Quiz -->
+    <div class="quiz">
+      <h2>Quiz About Earth</h2>
+      <p>What percentage of Earth's surface is covered by water?</p>
+      <button onclick="alert('Correct! Approximately 71% of Earth is covered by water.')">
+        71%
+      </button>
+      <button onclick="alert('Incorrect! The correct answer is 71%.')">
+        50%
+      </button>
+    </div>
+
+    <!-- Feature 3: Real-Time Data from NASA API -->
+    <div class="feature">
+      <h2>Real-Time Data from NASA</h2>
+      <p id="nasa-data">Loading real-time data about Earth...</p>
+    </div>
+
+    <!-- Feature 4: Interactive 3D Model -->
+    <div class="feature">
+      <h2>Interactive 3D Model</h2>
+      <div class="image-container">
+        <iframe
+          src="https://earth.nullschool.net/"
+          width="100%"
+          height="450px"
+          frameborder="0"
+        ></iframe>
+        <iframe
+          src="https://earth.google.com/web/"
+          width="100%"
+          height="450px"
+          frameborder="0"
+        ></iframe>
+      </div>
+    </div>
+
+    <!-- Feature 5: Educational Content -->
+    <div class="feature">
+      <section id="educational-content">
+        <h2>Educational Content</h2>
+        <div class="card-grid">
+          <div class="card">
+            <h3>Overview</h3>
+            <p>Earth is the third planet from the Sun and the only known astronomical object to harbor life.</p>
+          </div>
+          <div class="card">
+            <h3>Atmosphere</h3>
+            <p>Earth's atmosphere is 78% nitrogen, 21% oxygen, and 1% other gases, protecting life from harmful radiation.</p>
+          </div>
+          <div class="card">
+            <h3>Structure</h3>
+            <p>Earth has a solid inner core, liquid outer core, mantle, and crust that forms the continents and ocean basins.</p>
+          </div>
+          <div class="card">
+            <h3>Biosphere</h3>
+            <p>Earth supports millions of species including humans in ecosystems that form the biosphere.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Feature 6: Historical Timeline -->
+    <div class="feature">
+      <section id="historical-timeline">
+        <h2>Historical Timeline</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>1961 - First Human in Space</h4>
+            <p>Yuri Gagarin becomes the first human to journey into outer space.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>1969 - Moon Landing</h4>
+            <p>Apollo 11 mission lands the first humans on the Moon.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>1990 - Hubble Launch</h4>
+            <p>Hubble Space Telescope is launched, revolutionizing our view of Earth from space.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>2000 - ISS Becomes Operational</h4>
+            <p>International Space Station begins continuous human presence in space.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>2021 - Climate Change Focus</h4>
+            <p>Increased global focus on Earth's climate and environmental changes.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Feature 7: Space Missions -->
+    <div class="feature">
+      <section id="space-missions">
+        <h2>Earth Observation Missions</h2>
+        <div class="card-grid">
+          <div class="card">
+            <h3>Landsat Program</h3>
+            <p>The longest-running enterprise for acquisition of satellite imagery of Earth, operational since 1972.</p>
+          </div>
+          <div class="card">
+            <h3>Sentinel Missions</h3>
+            <p>Part of the European Copernicus Programme, providing radar and optical imaging for land and ocean monitoring.</p>
+          </div>
+          <div class="card">
+            <h3>GOES Series</h3>
+            <p>Geostationary weather satellites providing continuous monitoring of Earth's weather systems.</p>
+          </div>
+          <div class="card">
+            <h3>Aqua/Terra</h3>
+            <p>NASA satellites studying Earth's water cycle and climate systems.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Feature 8: Virtual Reality (VR) Mode -->
+    <div class="feature">
+      <h2>Virtual Tour of Earth</h2>
+      <div class="video-tour">
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+          <iframe
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+            src="https://www.youtube.com/embed/QSNa8U1yGrM?start=15&autoplay=1&mute=1&controls=1"
+            title="Earth Virtual Tour"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="tour-hotspots">
+          <div
+            class="hotspot"
+            style="top: 30%; left: 25%"
+            data-info="Amazon Rainforest - The largest tropical rainforest on Earth"
+          >
+            <div class="pulse"></div>
+            <div class="info-box">Amazon Rainforest</div>
+          </div>
+          <div
+            class="hotspot"
+            style="top: 50%; left: 60%"
+            data-info="Great Barrier Reef - The world's largest coral reef system"
+          >
+            <div class="pulse"></div>
+            <div class="info-box">Great Barrier Reef</div>
+          </div>
+          <div
+            class="hotspot"
+            style="top: 70%; left: 40%"
+            data-info="Sahara Desert - The largest hot desert in the world"
+          >
+            <div class="pulse"></div>
+            <div class="info-box">Sahara Desert</div>
+          </div>
+        </div>
+      </div>
+      <div class="tour-script">
+        <h3>Tour Highlights</h3>
+        <ul>
+          <li>0:10 - Overview of Earth's atmosphere and oceans</li>
+          <li>0:45 - Exploration of the Amazon Rainforest</li>
+          <li>1:30 - Insights into the Great Barrier Reef</li>
+          <li>2:15 - Journey across the Sahara Desert</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Feature 9: Solar System Animation -->
+    <div class="solar-system">
+      <div class="sun"></div>
+      <div class="earth-orbit">
+        <div
+          class="earth-planet"
+          onmouseover="showPlanetInfo('Rotation Period: 24 hours<br>Orbital Period: 365.25 days<br>Diameter: 12,742 km')"
+          onmouseout="hidePlanetInfo()"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Feature 10: Exoplanet Comparison -->
+    <div class="feature">
+      <h2>Exoplanet Comparison</h2>
+      <div class="exoplanet-grid">
+        <div class="exoplanet-card">
+          <h3>Earth</h3>
+          <p>Diameter: 12,742 km</p>
+          <p>Orbital Period: 365.25 days</p>
+          <p>Surface Temp: 15°C avg</p>
+          <p>Atmosphere: Nitrogen-Oxygen</p>
+        </div>
+        <div class="exoplanet-card">
+          <h3>Kepler-452b</h3>
+          <p>Diameter: ~14,000 km</p>
+          <p>Orbital Period: 385 days</p>
+          <p>Surface Temp: Unknown</p>
+          <p>Atmosphere: Unknown</p>
+        </div>
+        <div class="exoplanet-card">
+          <h3>Mars</h3>
+          <p>Diameter: 6,779 km</p>
+          <p>Orbital Period: 687 days</p>
+          <p>Surface Temp: -63°C avg</p>
+          <p>Atmosphere: Carbon Dioxide</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 11: Mission Gallery -->
+    <div class="feature">
+      <h2>Historic Earth Missions</h2>
+      <div class="mission-gallery">
+        <!-- Apollo 11 Card -->
+        <div class="mission-card">
+          <div class="mission-image">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Apollo_11_Launch_-_GPN-2000-000630.jpg" alt="Apollo 11" />
+            <div class="mission-badge">1969</div>
+          </div>
+          <div class="mission-info">
+            <h3>Apollo 11</h3>
+            <div class="mission-stats">
+              <span class="stat">🇺🇸 NASA</span>
+              <span class="stat">🚀 Saturn V</span>
+              <span class="stat">🌕 Lunar Landing</span>
+            </div>
+            <p>
+              First manned mission to land on the Moon, providing the iconic "Blue Marble" Earth photo.
+            </p>
+            <button class="mission-button" onclick="showMissionVideo('apollo')">
+              Watch Launch
+            </button>
+          </div>
+        </div>
+        <!-- Hubble Card -->
+        <div class="mission-card">
+          <div class="mission-image">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/HST-SM4.jpeg" alt="Hubble Telescope" />
+            <div class="mission-badge">1990-Present</div>
+          </div>
+          <div class="mission-info">
+            <h3>Hubble Space Telescope</h3>
+            <div class="mission-stats">
+              <span class="stat">🇺🇸 NASA/ESA</span>
+              <span class="stat">🛰 Orbital Telescope</span>
+            </div>
+            <p>
+              Revolutionized astronomy and provided stunning images of Earth from space.
+            </p>
+            <button class="mission-button" onclick="showMissionVideo('hubble')">
+              Mission Recap
+            </button>
+          </div>
+        </div>
+        <!-- ISS Card -->
+        <div class="mission-card">
+          <div class="mission-image">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/International_Space_Station_after_undocking_of_STS-132.jpg" alt="International Space Station" />
+            <div class="mission-badge">2000-Present</div>
+          </div>
+          <div class="mission-info">
+            <h3>International Space Station</h3>
+            <div class="mission-stats">
+              <span class="stat">🌍 Multinational</span>
+              <span class="stat">🛰 Orbital Lab</span>
+            </div>
+            <p>
+              Continuously inhabited space station that studies Earth's environment and climate.
+            </p>
+            <button class="mission-button" onclick="showMissionVideo('iss')">
+              Live Tracker
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 12: Interactive Weather Simulator -->
+    <div class="weather-simulator">
+      <h2>Interactive Weather Simulator</h2>
+      <p>Adjust the slider to simulate different weather conditions on Earth.</p>
+      <img id="weather-image" src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg" alt="Earth Weather" />
+      <br />
+      <input type="range" min="50" max="150" value="100" class="weather-slider" id="weather-slider" />
+      <p id="weather-value">Brightness: 100%</p>
+    </div>
+
+    <!-- Feature 13: Live Earth Camera Feed -->
+    <div class="live-feed">
+      <h2>Live Earth Camera Feed</h2>
+      <iframe src="https://www.youtube.com/embed/21X5lGlDOfg" title="Live Earth Camera Feed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- Gamification Panel (fixed position) -->
+  <div class="gamification-panel">
+    <h4>Your Progress</h4>
+    <div class="badge explorer-badge" title="Explorer Badge"></div>
+    <div class="badge researcher-badge" title="Researcher Badge"></div>
+    <p>Points: <span id="points">0</span></p>
+  </div>
+
+  <!-- Night Sky Toggle -->
+  <button onclick="toggleNightSky()" class="night-sky-toggle">🌙 Night Sky</button>
+  <div class="night-sky" id="nightSky"></div>
+
+  <!-- JavaScript Section -->
+  <script>
+    // Add click handlers for hotspots
+    document.querySelectorAll('.hotspot').forEach((hotspot) => {
+      hotspot.style.pointerEvents = 'auto';
+      hotspot.addEventListener('click', () => {
+        const info = hotspot.getAttribute('data-info');
+        alert(info);
+      });
+    });
+
+    // Fetch real-time data from NASA API
+    const nasaDataElement = document.getElementById('nasa-data');
+    const apiKey = 'DEMO_KEY'; // Replace with your NASA API key
+    async function fetchEarthData() {
+      try {
+        const response = await fetch(
+          `https://api.nasa.gov/planetary/apod?api_key=${apiKey}`
+        );
+        const data = await response.json();
+        nasaDataElement.innerHTML = `<strong>NASA's Astronomy Picture of the Day:</strong> ${data.title}<br><img src="${data.url}" alt="NASA APOD" style="max-width: 100%; border-radius: 10px;">`;
+      } catch (error) {
+        nasaDataElement.textContent = 'Failed to load real-time data.';
+      }
+    }
+    fetchEarthData();
+
+    // Night Sky functionality
+    function createStars() {
+      const nightSky = document.getElementById('nightSky');
+      for (let i = 0; i < 200; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 3 + 'px';
+        star.style.height = star.style.width;
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animation = `twinkle ${Math.random() * 3 + 2}s infinite`;
+        nightSky.appendChild(star);
+      }
+    }
+    function toggleNightSky() {
+      const nightSky = document.getElementById('nightSky');
+      if (nightSky.style.display === 'none' || nightSky.style.display === '') {
+        nightSky.style.display = 'block';
+        createStars();
+        document.body.style.background = '#000';
+      } else {
+        nightSky.style.display = 'none';
+        document.body.style.background =
+          'linear-gradient(45deg, #f3ec78, #af4261, #45a1ff, #ff9d6c)';
+      }
+    }
+
+    // Planet info tooltip
+    function showPlanetInfo(info) {
+      const tooltip = document.createElement('div');
+      tooltip.id = 'planetTooltip';
+      tooltip.innerHTML = info;
+      tooltip.style.position = 'absolute';
+      tooltip.style.background = 'rgba(0,0,0,0.9)';
+      tooltip.style.color = '#fff';
+      tooltip.style.padding = '10px';
+      tooltip.style.borderRadius = '5px';
+      document.body.appendChild(tooltip);
+      document.addEventListener('mousemove', moveTooltip);
+    }
+    function hidePlanetInfo() {
+      const tooltip = document.getElementById('planetTooltip');
+      if (tooltip) tooltip.remove();
+      document.removeEventListener('mousemove', moveTooltip);
+    }
+    function moveTooltip(e) {
+      const tooltip = document.getElementById('planetTooltip');
+      tooltip.style.left = e.pageX + 15 + 'px';
+      tooltip.style.top = e.pageY + 15 + 'px';
+    }
+
+    // Gamification points
+    let points = 0;
+    document.querySelectorAll('.feature, .card, .mission-card, .exoplanet-card').forEach((element) => {
+      element.addEventListener('click', () => {
+        points += 10;
+        document.getElementById('points').textContent = points;
+      });
+    });
+
+    // Mission video links
+    function showMissionVideo(mission) {
+      const videos = {
+        apollo: 'https://youtu.be/5wLz7McUD8U',
+        hubble: 'https://youtu.be/4H1SYd6JzBw',
+        iss: 'https://youtu.be/21X5lGlDOfg',
+      };
+      window.open(videos[mission], '_blank');
+    }
+
+    // Weather simulator
+    const weatherSlider = document.getElementById('weather-slider');
+    const weatherValue = document.getElementById('weather-value');
+    weatherSlider.addEventListener('input', function() {
+      const brightness = weatherSlider.value;
+      weatherValue.textContent = `Brightness: ${brightness}%`;
+      document.getElementById('weather-image').style.filter = `brightness(${brightness}%)`;
+    });
+  </script>
+</body>
+</html>

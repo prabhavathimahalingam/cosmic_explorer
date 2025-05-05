@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neptune - Cosmic Explorer</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Enhanced Background & Global Styles */
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      /* Animated, colorful gradient background */
+      background: linear-gradient(45deg, #f3ec78, #af4261, #45a1ff, #ff9d6c);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(255, 165, 0, 0.5);
+    }
+    .feature {
+      margin-bottom: 40px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(255, 165, 0, 0.2);
+    }
+    .feature img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    /* Quiz Section */
+    .quiz {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .quiz button {
+      background: #ff6600;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .quiz button:hover {
+      background: #cc5200;
+    }
+    /* Animation Example */
+    .animation {
+      width: 100px;
+      height: 100px;
+      background: #ff6600;
+      border-radius: 50%;
+      margin: 20px auto;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    /* Image Container Styles */
+    .image-container {
+      display: flex;
+      gap: 20px;
+    }
+    .image-container iframe {
+      flex: 1;
+      border-radius: 10px;
+    }
+    /* Video Tour & Hotspots */
+    .video-tour {
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
+      margin: 20px 0;
+    }
+    .tour-hotspots {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .hotspot {
+      position: absolute;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .pulse {
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 165, 0, 0.5);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .info-box {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+    }
+    .hotspot:hover .info-box {
+      opacity: 1;
+    }
+    .tour-script {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .tour-script li {
+      margin: 10px 0;
+      padding: 10px;
+      border-left: 3px solid #ff6600;
+      transition: all 0.3s;
+    }
+    .tour-script li:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateX(10px);
+    }
+    /* Solar System Animation */
+    .solar-system {
+      position: relative;
+      width: 600px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    .sun {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(#ff8f00, #ff6f00);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 50px #ff6f00;
+    }
+    .neptune-orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 450px;
+      height: 450px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: orbit 14s linear infinite;
+    }
+    .neptune-planet {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      background: radial-gradient(#4f9bd3, #2d73a1);
+      border-radius: 50%;
+      cursor: pointer;
+      animation: rotate 7s linear infinite;
+    }
+    @keyframes orbit {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    /* Night Sky Mode */
+    .night-sky {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 1000;
+      display: none;
+    }
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    /* Exoplanet Comparison */
+    .exoplanet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .exoplanet-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      transition: transform 0.3s;
+    }
+    .exoplanet-card:hover {
+      transform: scale(1.05);
+    }
+    /* Gamification Panel */
+    .gamification-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border-radius: 10px;
+    }
+    .badge {
+      width: 40px;
+      height: 40px;
+      background: #ff6600;
+      border-radius: 50%;
+      margin: 5px;
+      display: inline-block;
+    }
+    /* Collaborative Learning */
+    .community-feed {
+      display: grid;
+      gap: 15px;
+    }
+    .community-post {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 10px;
+      border-left: 4px solid #ff6600;
+    }
+    /* Mission Gallery Styles */
+    .mission-gallery {
+      display: grid;
+      gap: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+    .mission-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .mission-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(255, 165, 0, 0.2);
+    }
+    .mission-image {
+      position: relative;
+      height: 250px;
+      overflow: hidden;
+    }
+    .mission-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(0.3);
+      transition: transform 0.5s;
+    }
+    .mission-card:hover img {
+      transform: scale(1.1);
+      filter: grayscale(0);
+    }
+    .mission-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 102, 0, 0.9);
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+    .mission-info {
+      padding: 20px;
+    }
+    .mission-stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+    .stat {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.9em;
+    }
+    .mission-button {
+      background: linear-gradient(45deg, #ff6600, #ff4500);
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 15px;
+      transition: transform 0.2s;
+    }
+    .mission-button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #ff4500, #ff3300);
+    }
+    /* New Feature: Interactive Wind Speed Simulator */
+    .wind-simulator {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .wind-simulator img {
+      max-width: 300px;
+      transition: transform 0.5s;
+    }
+    .wind-slider {
+      width: 80%;
+      margin-top: 20px;
+    }
+    /* New Feature: Neptune Moons Explorer */
+    .moons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .moon-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+    .moon-card:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Neptune - The Blue Giant</h1>
+    <!-- Feature 1: Real-Time Image -->
+    <div class="feature">
+      <h2>Real-Time Image of Neptune</h2>
+      <img id="neptune-image" src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg" alt="Neptune" />
+    </div>
+    
+    <!-- Feature 2: Quiz -->
+    <div class="quiz">
+      <h2>Quiz About Neptune</h2>
+      <p>What is Neptune especially known for?</p>
+      <button onclick="alert('Correct! Neptune is known for its supersonic winds.')">
+        Supersonic winds
+      </button>
+      <button onclick="alert('Incorrect! Neptune is known for its supersonic winds.')">
+        Calm weather
+      </button>
+    </div>
+    
+    <!-- Feature 3: Real-Time Data from NASA API -->
+    <div class="feature">
+      <h2>Real-Time Data from NASA</h2>
+      <p id="nasa-data">Loading real-time data about Neptune...</p>
+    </div>
+    
+    <!-- Feature 4: Interactive 3D Model -->
+    <div class="feature">
+      <h2>Interactive 3D Model</h2>
+      <div class="image-container">
+        <iframe src="./images/neptune1.jpeg" width="100%" height="450px" frameborder="0"></iframe>
+        <iframe src="./images/neptune2.jpeg" width="100%" height="450px" frameborder="0"></iframe>
+      </div>
+    </div>
+    
+    <!-- Feature 5: Educational Content -->
+    <div class="feature">
+      <h2>Educational Content</h2>
+      <p>
+        Neptune is the eighth and farthest known planet in our solar system. Renowned for its deep blue color, it experiences supersonic winds and dynamic weather patterns, making it one of the most extreme worlds.
+      </p>
+    </div>
+    
+    <!-- Feature 6: Historical Timeline -->
+    <div class="feature">
+      <h2>Historical Timeline</h2>
+      <p>Key events in Neptune's exploration:</p>
+      <ul>
+        <li>1989: Voyager 2 flyby revealed Neptune's dynamic atmosphere and rings.</li>
+        <li>1990: Hubble Space Telescope observations refined our view of its weather patterns.</li>
+        <li>2000s: Ground-based telescopes and space observatories continue to study its storms.</li>
+      </ul>
+    </div>
+    
+    <!-- Feature 7: Space Missions -->
+    <div class="feature">
+      <h2>Space Missions</h2>
+      <p>Learn about missions to Neptune:</p>
+      <ul>
+        <li>Voyager 2</li>
+        <li>Proposed Neptune Orbiter</li>
+      </ul>
+    </div>
+    
+   <!-- Feature 8: Virtual Reality (VR) Mode -->
+<div class="feature">
+  <h2>Virtual Tour of Neptune</h2>
+  <div class="video-tour">
+    <iframe
+      width="100%"
+      height="500"
+      src="https://www.youtube.com/embed/NStn7zZKXfE?autoplay=1&mute=1&controls=1"
+      title="Neptune Virtual Tour"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+    <div class="tour-hotspots">
+      <div
+        class="hotspot"
+        style="top: 30%; left: 25%"
+        data-info="Great Dark Spot - Neptune's massive storm system"
+      >
+        <div class="pulse"></div>
+        <div class="info-box">Great Dark Spot</div>
+      </div>
+      <div
+        class="hotspot"
+        style="top: 50%; left: 60%"
+        data-info="Neptune's Rings - Faint and dusty ring system"
+      >
+        <div class="pulse"></div>
+        <div class="info-box">Neptune's Rings</div>
+      </div>
+    </div>
+  </div>
+  <div class="tour-script">
+    <h3>Tour Highlights</h3>
+    <ul>
+      <li>0:10 - Overview of Neptune's atmosphere</li>
+      <li>0:45 - Exploration of the Great Dark Spot</li>
+      <li>1:30 - Insights from Voyager 2 mission</li>
+    </ul>
+  </div>
+</div>
+
+    
+    <!-- Feature 9: Solar System Animation -->
+    <div class="solar-system">
+      <div class="sun"></div>
+      <div class="neptune-orbit">
+        <div class="neptune-planet" onmouseover="showPlanetInfo('Rotation Period: 16.11 hours<br>Orbital Period: 164.8 years')" onmouseout="hidePlanetInfo()"></div>
+      </div>
+    </div>
+    
+    <!-- Feature 10: Enhanced Exoplanet Exploration -->
+    <div class="feature">
+      <h2>Exoplanet Comparison</h2>
+      <div class="exoplanet-grid">
+        <div class="exoplanet-card">
+          <h3>Neptune</h3>
+          <p>Diameter: 49,244 km</p>
+          <p>Orbital Period: 164.8 years</p>
+        </div>
+        <div class="exoplanet-card">
+          <h3>Kepler-22b</h3>
+          <p>Diameter: ~24,000 km</p>
+          <p>Orbital Period: 289 days</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Gamification Panel -->
+    <div class="gamification-panel">
+      <h4>Your Progress</h4>
+      <div class="badge" title="Explorer Badge"></div>
+      <div class="badge" title="Researcher Badge"></div>
+      <p>Points: <span id="points">0</span></p>
+    </div>
+    
+    <!-- Night Sky Toggle -->
+    <button onclick="toggleNightSky()" class="night-sky-toggle">🌙 Night Sky</button>
+    <div class="night-sky" id="nightSky"></div>
+    
+    <!-- Feature 11: Enhanced Space Missions -->
+    <div class="feature">
+      <h2>Historic Neptune Missions</h2>
+      <div class="mission-gallery">
+        <!-- Voyager 2 Card -->
+        <div class="mission-card">
+          <div class="mission-image">
+            <img src="./images/nep-voyager2.jpeg" alt="Voyager 2" />
+            <div class="mission-badge">1989</div>
+          </div>
+          <div class="mission-info">
+            <h3>Voyager 2</h3>
+            <div class="mission-stats">
+              <span class="stat">🇺🇸 NASA</span>
+              <span class="stat">🚀 Titan IIIE</span>
+              <span class="stat">📡 Flyby Mission</span>
+            </div>
+            <p>
+              Voyager 2 provided the first close-up images of Neptune, revealing its turbulent atmosphere and ring system.
+            </p>
+            <button class="mission-button" onclick="showMissionVideo('voyager')">Watch Launch</button>
+          </div>
+        </div>
+        <!-- Proposed Neptune Orbiter Card -->
+        <div class="mission-card">
+          <div class="mission-image">
+            <img src="./images/neptune-orbiter.jpeg" alt="Neptune Orbiter" />
+            <div class="mission-badge">Proposed</div>
+          </div>
+          <div class="mission-info">
+            <h3>Neptune Orbiter</h3>
+            <div class="mission-stats">
+              <span class="stat">🚀 ESA/NASA</span>
+              <span class="stat">🛰 Orbiter</span>
+              <span class="stat">🔭 Science Mission</span>
+            </div>
+            <p>
+              A proposed mission designed to study Neptune’s atmospheric dynamics, magnetic field, and ring system in unprecedented detail.
+            </p>
+            <button class="mission-button" onclick="showMissionVideo('orbiter')">Live Tracker</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- New Feature: Interactive Wind Speed Simulator -->
+    <div class="wind-simulator">
+      <h2>Interactive Wind Speed Simulator</h2>
+      <p>Adjust the slider to simulate Neptune's supersonic winds.</p>
+      <img id="wind-image" src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg" alt="Neptune Wind" />
+      <br />
+      <input type="range" min="0" max="2500" value="1200" class="wind-slider" id="wind-slider" />
+      <p id="wind-value">Wind Speed: 1200 km/h</p>
+    </div>
+    
+    <!-- New Feature: Neptune Moons Explorer -->
+    <div class="feature">
+      <h2>Neptune Moons Explorer</h2>
+      <div class="moons-grid">
+        <div class="moon-card" onclick="alert('Triton: Neptune’s largest moon, known for its retrograde orbit and geologically active surface.')">
+          <h3>Triton</h3>
+        </div>
+        <div class="moon-card" onclick="alert('Nereid: An irregularly shaped moon with a highly eccentric orbit.')">
+          <h3>Nereid</h3>
+        </div>
+        <div class="moon-card" onclick="alert('Proteus: One of Neptune’s innermost moons, with a dark and heavily cratered surface.')">
+          <h3>Proteus</h3>
+        </div>
+        <div class="moon-card" onclick="alert('Larissa: A small, irregular moon orbiting close to Neptune.')">
+          <h3>Larissa</h3>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- JavaScript Section -->
+  <script>
+    // Add click handlers for hotspots
+    document.querySelectorAll('.hotspot').forEach((hotspot) => {
+      hotspot.style.pointerEvents = 'auto';
+      hotspot.addEventListener('click', () => {
+        const info = hotspot.getAttribute('data-info');
+        alert(info);
+      });
+    });
+    
+    // Fetch real-time data from NASA API
+    const nasaDataElement = document.getElementById('nasa-data');
+    const apiKey = 'DEMO_KEY'; // Replace with your NASA API key
+    async function fetchNeptuneData() {
+      try {
+        const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}`);
+        const data = await response.json();
+        nasaDataElement.innerHTML = `<strong>NASA's Astronomy Picture of the Day:</strong> ${data.title}<br><img src="${data.url}" alt="NASA APOD" style="max-width: 100%; border-radius: 10px;">`;
+      } catch (error) {
+        nasaDataElement.textContent = 'Failed to load real-time data.';
+      }
+    }
+    fetchNeptuneData();
+    
+    // Night Sky functionality
+    function createStars() {
+      const nightSky = document.getElementById('nightSky');
+      for (let i = 0; i < 200; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 3 + 'px';
+        star.style.height = star.style.width;
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animation = `twinkle ${Math.random() * 3 + 2}s infinite`;
+        nightSky.appendChild(star);
+      }
+    }
+    function toggleNightSky() {
+      const nightSky = document.getElementById('nightSky');
+      if (nightSky.style.display === 'none' || nightSky.style.display === '') {
+        nightSky.style.display = 'block';
+        createStars();
+        document.body.style.background = '#000';
+      } else {
+        nightSky.style.display = 'none';
+        document.body.style.background = 'linear-gradient(45deg, #f3ec78, #af4261, #45a1ff, #ff9d6c)';
+      }
+    }
+    
+    // Planet info tooltip
+    function showPlanetInfo(info) {
+      const tooltip = document.createElement('div');
+      tooltip.id = 'planetTooltip';
+      tooltip.innerHTML = info;
+      tooltip.style.position = 'absolute';
+      tooltip.style.background = 'rgba(0,0,0,0.9)';
+      tooltip.style.color = '#fff';
+      tooltip.style.padding = '10px';
+      tooltip.style.borderRadius = '5px';
+      document.body.appendChild(tooltip);
+      document.addEventListener('mousemove', moveTooltip);
+    }
+    function hidePlanetInfo() {
+      const tooltip = document.getElementById('planetTooltip');
+      if (tooltip) tooltip.remove();
+      document.removeEventListener('mousemove', moveTooltip);
+    }
+    function moveTooltip(e) {
+      const tooltip = document.getElementById('planetTooltip');
+      tooltip.style.left = e.pageX + 15 + 'px';
+      tooltip.style.top = e.pageY + 15 + 'px';
+    }
+    
+    // Gamification points
+    let points = 0;
+    document.querySelectorAll('.feature, .exoplanet-card, .moon-card').forEach((element) => {
+      element.addEventListener('click', () => {
+        points += 10;
+        document.getElementById('points').textContent = points;
+      });
+    });
+    
+    // Mission video links
+    function showMissionVideo(mission) {
+      const videos = {
+        voyager: 'https://youtu.be/oCV57qfC7GM',
+        orbiter: 'https://youtu.be/EXAMPLE_VIDEO'
+      };
+      window.open(videos[mission], '_blank');
+    }
+    
+    // New Feature: Interactive Wind Speed Simulator
+    const windSlider = document.getElementById('wind-slider');
+    const windValue = document.getElementById('wind-value');
+    windSlider.addEventListener('input', function() {
+      const speed = windSlider.value;
+      windValue.textContent = `Wind Speed: ${speed} km/h`;
+      // Optionally, adjust the image rotation to simulate wind gusts:
+      document.getElementById('wind-image').style.transform = `rotate(${speed / 20}deg)`;
+    });
+  </script>
+</body>
+</html>

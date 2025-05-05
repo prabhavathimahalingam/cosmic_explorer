@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Solar System</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="solarCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("solarCanvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const SUN_RADIUS = 50;
+        const CENTER_X = canvas.width / 2;
+        const CENTER_Y = canvas.height / 2;
+
+        // URLs for real images of the Sun and planets
+        const images = {
+            sun: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg/800px-The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg",
+            mercury: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Mercury_in_color_-_Prockter07_centered.jpg/800px-Mercury_in_color_-_Prockter07_centered.jpg",
+            venus: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Venus-real_color.jpg/800px-Venus-real_color.jpg",
+            earth: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/The_Earth_seen_from_Apollo_17.jpg/800px-The_Earth_seen_from_Apollo_17.jpg",
+            mars: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/800px-OSIRIS_Mars_true_color.jpg",
+            jupiter: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/800px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg",
+            saturn: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/800px-Saturn_during_Equinox.jpg",
+            uranus: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Uranus2.jpg/800px-Uranus2.jpg",
+            neptune: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Neptune_-_Voyager_2_%2829347980845%29_flatten_crop.jpg/800px-Neptune_-_Voyager_2_%2829347980845%29_flatten_crop.jpg",
+            moon: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/800px-FullMoon2010.jpg"
+        };
+
+        // Load images
+        const loadedImages = {};
+        const imagePromises = Object.keys(images).map(key => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = images[key];
+                img.onload = () => {
+                    loadedImages[key] = img;
+                    resolve();
+                };
+                img.onerror = reject;
+            });
+        });
+
+        // Planets with orbital radius (in pixels) and speed (relative to real solar system)
+        const planets = [
+            { name: "Mercury", radius: 10, distance: 60, speed: 0.02, image: "mercury", moons: [], link: "mercury.html" },
+            { name: "Venus", radius: 15, distance: 100, speed: 0.015, image: "venus", moons: [], link: "venus.html" },
+            { name: "Earth", radius: 20, distance: 150, speed: 0.01, image: "earth", moons: [{ radius: 5, distance: 30, speed: 0.03, image: "moon" }], link: "earth.html" },
+            { name: "Mars", radius: 15, distance: 200, speed: 0.008, image: "mars", moons: [{ radius: 4, distance: 25, speed: 0.04, image: "moon" }], link: "mars.html" },
+            { name: "Jupiter", radius: 40, distance: 300, speed: 0.005, image: "jupiter", moons: [{ radius: 8, distance: 50, speed: 0.02, image: "moon" }], link: "jupiter.html" },
+            { name: "Saturn", radius: 35, distance: 400, speed: 0.003, image: "saturn", moons: [{ radius: 7, distance: 45, speed: 0.018, image: "moon" }], link: "saturn.html" },
+            { name: "Uranus", radius: 30, distance: 500, speed: 0.002, image: "uranus", moons: [{ radius: 6, distance: 40, speed: 0.016, image: "moon" }], link: "uranus.html" },
+            { name: "Neptune", radius: 25, distance: 600, speed: 0.001, image: "neptune", moons: [{ radius: 5, distance: 35, speed: 0.014, image: "moon" }], link: "neptune.html" },
+        ];
+
+        let angle = 0;
+
+        // Create random stars
+        const stars = Array.from({ length: 150 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2
+        }));
+
+        function drawStars() {
+            ctx.fillStyle = "white";
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function drawSolarSystem() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw stars
+            drawStars();
+
+            // Draw Sun
+            if (loadedImages.sun) {
+                ctx.drawImage(
+                    loadedImages.sun,
+                    CENTER_X - SUN_RADIUS,
+                    CENTER_Y - SUN_RADIUS,
+                    SUN_RADIUS * 2,
+                    SUN_RADIUS * 2
+                );
+            }
+
+            planets.forEach((planet, index) => {
+                const planetAngle = angle * planet.speed;
+                const planetX = CENTER_X + Math.cos(planetAngle) * planet.distance;
+                const planetY = CENTER_Y + Math.sin(planetAngle) * planet.distance;
+
+                // Draw planet orbit
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+                ctx.beginPath();
+                ctx.arc(CENTER_X, CENTER_Y, planet.distance, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Draw planet
+                if (loadedImages[planet.image]) {
+                    ctx.drawImage(
+                        loadedImages[planet.image],
+                        planetX - planet.radius,
+                        planetY - planet.radius,
+                        planet.radius * 2,
+                        planet.radius * 2
+                    );
+                }
+
+                // Add click event to planets
+                ctx.beginPath();
+                ctx.arc(planetX, planetY, planet.radius, 0, Math.PI * 2);
+                ctx.fillStyle = "transparent";
+                ctx.fill();
+                ctx.strokeStyle = "transparent";
+                ctx.stroke();
+
+                // Add click event
+                canvas.addEventListener("click", (event) => {
+                    const rect = canvas.getBoundingClientRect();
+                    const mouseX = event.clientX - rect.left;
+                    const mouseY = event.clientY - rect.top;
+                    const distance = Math.sqrt((mouseX - planetX) ** 2 + (mouseY - planetY) ** 2);
+                    if (distance <= planet.radius) {
+                        window.location.href = planet.link;
+                    }
+                });
+            });
+
+            angle += 0.02; // Speed of the system
+            requestAnimationFrame(drawSolarSystem);
+        }
+
+        // Wait for all images to load before starting the animation
+        Promise.all(imagePromises).then(() => {
+            drawSolarSystem();
+        });
+    </script>
+    <body>
+        <canvas id="solarCanvas"></canvas>
+        <div id="message">✨ Double-click on the planets to explore them! 🚀</div>
+    
+        <style>
+            #message {
+                position: absolute;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                color: white;
+                font-size: 20px;
+                font-family: Arial, sans-serif;
+                background: rgba(0, 0, 0, 0.7);
+                padding: 10px 20px;
+                border-radius: 10px;
+                animation: fadeInOut 4s infinite;
+            }
+    
+            @keyframes fadeInOut {
+                0% { opacity: 0; }
+                50% { opacity: 1; }
+                100% { opacity: 0; }
+            }
+        </style>
+       
+    </body>
+    <div id="sunInfo" class="info-box">
+        <h2>☀️ The Sun</h2>
+        <p>The Sun is a massive ball of burning gases, primarily hydrogen and helium. It provides energy for all life on Earth.</p>
+        <ul>
+            <li>🌡️ Temperature: ~5,500°C (9,932°F) on the surface</li>
+            <li>⚡ Energy: Produces 386 billion megawatts</li>
+            <li>🌎 Size: 109 times Earth's diameter</li>
+            <li>🔥 Core temperature: ~15 million °C</li>
+            <li>💨 Solar winds travel at 450 km/s</li>
+        </ul>
+    </div>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const canvas = document.getElementById("solarCanvas");
+        const sunInfo = document.getElementById("sunInfo");
+    
+        canvas.addEventListener("click", (event) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+    
+            const CENTER_X = canvas.width / 2;
+            const CENTER_Y = canvas.height / 2;
+            const SUN_RADIUS = 50; // Must match the canvas-drawn Sun size
+    
+            // Check if the click is inside the Sun's area
+            const distance = Math.sqrt((mouseX - CENTER_X) ** 2 + (mouseY - CENTER_Y) ** 2);
+            if (distance <= SUN_RADIUS) {
+                console.log("☀️ Sun clicked!");
+                sunInfo.style.display = "block";
+                event.stopPropagation(); // Prevent immediate closing
+            }
+        });
+    
+        // Close Sun info when clicking outside
+        document.addEventListener("click", (event) => {
+            if (!sunInfo.contains(event.target)) {
+                sunInfo.style.display = "none";
+            }
+        });
+    });
+    </script>
+    <style>
+        .info-box {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    
+        .info-box h2 {
+            margin: 0;
+            font-size: 22px;
+            color: gold;
+        }
+    
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+            font-size: 14px;
+        }
+    
+        .info-box ul li {
+            padding: 5px 0;
+        }
+    
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    
+</body>
+</html>

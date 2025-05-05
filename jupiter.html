@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jupiter - Cosmic Explorer</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Enhanced Background & Global Styles */
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      /* Animated, colorful gradient background */
+      background: linear-gradient(45deg, #f3ec78, #af4261, #45a1ff, #ff9d6c);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(255, 165, 0, 0.5);
+    }
+    .feature {
+      margin-bottom: 40px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(255, 165, 0, 0.2);
+    }
+    .feature img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    /* Quiz Section */
+    .quiz {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .quiz button {
+      background: #ff6600;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .quiz button:hover {
+      background: #cc5200;
+    }
+    /* Animation Example */
+    .animation {
+      width: 100px;
+      height: 100px;
+      background: #ff6600;
+      border-radius: 50%;
+      margin: 20px auto;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    /* Image Container Styles */
+    .image-container {
+      display: flex;
+      gap: 20px;
+    }
+    .image-container iframe {
+      flex: 1;
+      border-radius: 10px;
+    }
+    /* Video Tour & Hotspots */
+    .video-tour {
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
+      margin: 20px 0;
+    }
+    .tour-hotspots {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .hotspot {
+      position: absolute;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .pulse {
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 165, 0, 0.5);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .info-box {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+    }
+    .hotspot:hover .info-box {
+      opacity: 1;
+    }
+    .tour-script {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .tour-script li {
+      margin: 10px 0;
+      padding: 10px;
+      border-left: 3px solid #ff6600;
+      transition: all 0.3s;
+    }
+    .tour-script li:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateX(10px);
+    }
+    /* Solar System Animation */
+    .solar-system {
+      position: relative;
+      width: 600px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    .sun {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(#ff8f00, #ff6f00);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 50px #ff6f00;
+    }
+    .jupiter-orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 500px;
+      height: 500px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: orbit 15s linear infinite;
+    }
+    .jupiter-planet {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(#d1a26f, #a67c52);
+      border-radius: 50%;
+      cursor: pointer;
+      animation: rotate 7s linear infinite;
+    }
+    @keyframes orbit {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    /* Night Sky Mode */
+    .night-sky {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 1000;
+      display: none;
+    }
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    /* Exoplanet Comparison */
+    .exoplanet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .exoplanet-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      transition: transform 0.3s;
+    }
+    .exoplanet-card:hover {
+      transform: scale(1.05);
+    }
+    /* Gamification Panel */
+    .gamification-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border-radius: 10px;
+    }
+    .badge {
+      width: 40px;
+      height: 40px;
+      background: #ff6600;
+      border-radius: 50%;
+      margin: 5px;
+      display: inline-block;
+    }
+    /* Collaborative Learning */
+    .community-feed {
+      display: grid;
+      gap: 15px;
+    }
+    .community-post {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 10px;
+      border-left: 4px solid #ff6600;
+    }
+    /* Mission Gallery Styles */
+    .mission-gallery {
+      display: grid;
+      gap: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+    .mission-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .mission-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(255, 165, 0, 0.2);
+    }
+    .mission-image {
+      position: relative;
+      height: 250px;
+      overflow: hidden;
+    }
+    .mission-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(0.3);
+      transition: transform 0.5s;
+    }
+    .mission-card:hover img {
+      transform: scale(1.1);
+      filter: grayscale(0);
+    }
+    .mission-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 102, 0, 0.9);
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+    .mission-info {
+      padding: 20px;
+    }
+    .mission-stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+    .stat {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.9em;
+    }
+    .mission-button {
+      background: linear-gradient(45deg, #ff6600, #ff4500);
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 15px;
+      transition: transform 0.2s;
+    }
+    .mission-button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #ff4500, #ff3300);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Jupiter - The Gas Giant</h1>
+    <!-- Feature 1: Real-Time Image -->
+    <div class="feature">
+      <h2>Real-Time Image of Jupiter</h2>
+      <img
+        id="jupiter-image"
+        src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg"
+        alt="Jupiter"
+      />
+    </div>
+
+    <!-- Feature 2: Quiz -->
+    <div class="quiz">
+      <h2>Quiz About Jupiter</h2>
+      <p>Which planet is the largest in our solar system?</p>
+      <button onclick="alert('Correct! Jupiter is the largest planet.')">
+        Jupiter
+      </button>
+      <button onclick="alert('Incorrect! Jupiter is the largest planet.')">
+        Saturn
+      </button>
+    </div>
+
+    <!-- Feature 3: Real-Time Data from NASA API -->
+    <div class="feature">
+      <h2>Real-Time Data from NASA</h2>
+      <p id="nasa-data">Loading real-time data about Jupiter...</p>
+    </div>
+
+    <!-- Feature 4: Interactive 3D Model -->
+    <div class="feature">
+      <h2>Interactive 3D Model</h2>
+      <div class="image-container">
+        <iframe
+          src="./images/jupiter1.jpeg"
+          width="100%"
+          height="450px"
+          frameborder="0"
+        ></iframe>
+        <iframe
+          src="./images/jupiter2.jpeg"
+          width="100%"
+          height="450px"
+          frameborder="0"
+        ></iframe>
+      </div>
+    </div>
+
+    <!-- Feature 5: Educational Content -->
+    <div class="feature">
+      <h2>Educational Content</h2>
+      <p>
+        Jupiter is the largest planet in our solar system, a massive gas giant composed primarily of hydrogen and helium. It has a prominent set of rings, dozens of moons, and a powerful magnetic field.
+      </p>
+    </div>
+
+    <!-- Feature 6: Historical Timeline -->
+    <div class="feature">
+      <h2>Historical Timeline</h2>
+      <p>Key events in Jupiter exploration:</p>
+      <ul>
+        <li>1973: Pioneer 10 flyby.</li>
+        <li>1974: Pioneer 11 flyby.</li>
+        <li>1979: Voyager 1 and Voyager 2 flybys.</li>
+        <li>1995: Galileo orbiter arrival.</li>
+        <li>2016: Juno mission enters orbit.</li>
+      </ul>
+    </div>
+
+    <!-- Feature 7: Space Missions -->
+    <div class="feature">
+      <h2>Space Missions</h2>
+      <p>Learn about missions to Jupiter:</p>
+      <ul>
+        <li>Pioneer 10 &amp; 11</li>
+        <li>Galileo</li>
+        <li>Juno</li>
+      </ul>
+    </div>
+
+    <!-- Feature 8: Virtual Reality (VR) Mode -->
+    <div class="feature">
+      <h2>Virtual Tour of Jupiter</h2>
+      <div class="video-tour">
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+          <iframe
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+            src="https://www.youtube.com/embed/uj3Lq7Gu94Y?autoplay=1&mute=1&controls=1"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="tour-hotspots">
+          <div
+            class="hotspot"
+            style="top: 30%; left: 25%"
+            data-info="Great Red Spot - Jupiter's famous storm"
+          >
+            <div class="pulse"></div>
+            <div class="info-box">Great Red Spot</div>
+          </div>
+          <div
+            class="hotspot"
+            style="top: 50%; left: 60%"
+            data-info="Io - The most volcanically active moon"
+          >
+            <div class="pulse"></div>
+            <div class="info-box">Io</div>
+          </div>
+        </div>
+      </div>
+      <div class="tour-script">
+        <h3>Tour Highlights</h3>
+        <ul>
+          <li>0:10 - Jupiter's massive scale</li>
+          <li>0:45 - The Great Red Spot</li>
+          <li>1:30 - Moons and magnetic field data</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Solar System Animation -->
+    <div class="solar-system">
+      <div class="sun"></div>
+      <div class="jupiter-orbit">
+        <div
+          class="jupiter-planet"
+          onmouseover="showPlanetInfo('Rotation Period: ~9.9 hours<br>Orbital Period: ~4332 days')"
+          onmouseout="hidePlanetInfo()"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Enhanced Exoplanet Exploration -->
+    <div class="feature">
+      <h2>Exoplanet Comparison</h2>
+      <div class="exoplanet-grid">
+        <div class="exoplanet-card">
+          <h3>Jupiter</h3>
+          <p>Diameter: 139,820 km</p>
+          <p>Orbital Period: 4332 days</p>
+        </div>
+        <div class="exoplanet-card">
+          <h3>Kepler-16b</h3>
+          <p>Diameter: ~80,000 km</p>
+          <p>Orbital Period: 229 days</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gamification Panel -->
+    <div class="gamification-panel">
+      <h4>Your Progress</h4>
+      <div class="badge" title="Explorer Badge"></div>
+      <div class="badge" title="Researcher Badge"></div>
+      <p>Points: <span id="points">0</span></p>
+    </div>
+
+    <!-- Night Sky Toggle -->
+    <button onclick="toggleNightSky()" class="night-sky-toggle">🌙 Night Sky</button>
+    <div class="night-sky" id="nightSky"></div>
+    
+    <!-- Feature 9: Enhanced Space Missions -->
+    <div class="feature">
+      <h2>Historic Jupiter Missions</h2>
+      <div class="mission-gallery">
+        <!-- Pioneer 10 Card -->
+        <div class="mission-card">
+          <div class="mission-image">
+            <img src="./images/pioneer10.jpeg" alt="Pioneer 10" />
+            <div class="mission-badge">1972-1973</div>
+          </div>
+          <div class="mission-info">
+            <h3>Pioneer 10</h3>
+            <div class="mission-stats">
+              <span class="stat">🇺🇸 NASA</span>
+              <span class="stat">🚀 Atlas-Centaur</span>
+              <span class="stat">📡 Flyby Mission</span>
+            </div>
+            <p>
+              The first spacecraft to traverse the asteroid belt and perform a flyby of Jupiter.
+            </p>
+            <button class="mission-button" onclick="showMissionVideo('pioneer')">
+              Watch Launch
+            </button>
+          </div>
+        </div>
+        <!-- Galileo Card -->
+        <div class="mission-card">
+          <div class="mission-image">
+            <img src="./images/galileo.jpeg" alt="Galileo" />
+            <div class="mission-badge">1989-2003</div>
+          </div>
+          <div class="mission-info">
+            <h3>Galileo</h3>
+            <div class="mission-stats">
+              <span class="stat">🇺🇸 NASA</span>
+              <span class="stat">🚀 Space Shuttle</span>
+              <span class="stat">🛰 Orbiter</span>
+            </div>
+            <p>
+              An orbiter that studied Jupiter and its moons, revealing key insights into the gas giant’s structure.
+            </p>
+            <button class="mission-button" onclick="showMissionVideo('galileo')">
+              Mission Recap
+            </button>
+          </div>
+        </div>
+        <!-- Juno Card -->
+        <div class="mission-card">
+          <div class="mission-image">
+            <img src="./images/juno.jpeg" alt="Juno" />
+            <div class="mission-badge">2011-Present</div>
+          </div>
+          <div class="mission-info">
+            <h3>Juno</h3>
+            <div class="mission-stats">
+              <span class="stat">🇺🇸 NASA</span>
+              <span class="stat">🚀 Delta IV Heavy</span>
+              <span class="stat">🛰 Orbiter</span>
+            </div>
+            <p>
+              Currently orbiting Jupiter to study its composition, gravity field, magnetic field, and polar magnetosphere.
+            </p>
+            <button class="mission-button" onclick="showMissionVideo('juno')">
+              Live Tracker
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Section -->
+  <script>
+    // Add click handlers for hotspots
+    document.querySelectorAll('.hotspot').forEach((hotspot) => {
+      hotspot.style.pointerEvents = 'auto';
+      hotspot.addEventListener('click', () => {
+        const info = hotspot.getAttribute('data-info');
+        alert(info);
+      });
+    });
+
+    // Fetch real-time data from NASA API
+    const nasaDataElement = document.getElementById('nasa-data');
+    const apiKey = 'DEMO_KEY'; // Replace with your NASA API key
+    async function fetchJupiterData() {
+      try {
+        const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}`);
+        const data = await response.json();
+        nasaDataElement.innerHTML = `<strong>NASA's Astronomy Picture of the Day:</strong> ${data.title}<br><img src="${data.url}" alt="NASA APOD" style="max-width: 100%; border-radius: 10px;">`;
+      } catch (error) {
+        nasaDataElement.textContent = 'Failed to load real-time data.';
+      }
+    }
+    fetchJupiterData();
+
+    // Night Sky functionality
+    function createStars() {
+      const nightSky = document.getElementById('nightSky');
+      for (let i = 0; i < 200; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 3 + 'px';
+        star.style.height = star.style.width;
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animation = `twinkle ${Math.random() * 3 + 2}s infinite`;
+        nightSky.appendChild(star);
+      }
+    }
+    function toggleNightSky() {
+      const nightSky = document.getElementById('nightSky');
+      if (nightSky.style.display === 'none' || nightSky.style.display === '') {
+        nightSky.style.display = 'block';
+        createStars();
+        document.body.style.background = '#000';
+      } else {
+        nightSky.style.display = 'none';
+        document.body.style.background = 'linear-gradient(45deg, #f3ec78, #af4261, #45a1ff, #ff9d6c)';
+      }
+    }
+
+    // Planet info tooltip
+    function showPlanetInfo(info) {
+      const tooltip = document.createElement('div');
+      tooltip.id = 'planetTooltip';
+      tooltip.innerHTML = info;
+      tooltip.style.position = 'absolute';
+      tooltip.style.background = 'rgba(0,0,0,0.9)';
+      tooltip.style.color = '#fff';
+      tooltip.style.padding = '10px';
+      tooltip.style.borderRadius = '5px';
+      document.body.appendChild(tooltip);
+      document.addEventListener('mousemove', moveTooltip);
+    }
+    function hidePlanetInfo() {
+      const tooltip = document.getElementById('planetTooltip');
+      if (tooltip) tooltip.remove();
+      document.removeEventListener('mousemove', moveTooltip);
+    }
+    function moveTooltip(e) {
+      const tooltip = document.getElementById('planetTooltip');
+      tooltip.style.left = e.pageX + 15 + 'px';
+      tooltip.style.top = e.pageY + 15 + 'px';
+    }
+
+    // Gamification points
+    let points = 0;
+    document.querySelectorAll('.feature, .exoplanet-card').forEach((element) => {
+      element.addEventListener('click', () => {
+        points += 10;
+        document.getElementById('points').textContent = points;
+      });
+    });
+
+    // Mission video links
+    function showMissionVideo(mission) {
+      const videos = {
+        pioneer: 'https://youtu.be/oCV57qfC7GM',
+        galileo: 'https://youtu.be/dI1bGh3fN7I',
+        juno: 'https://youtu.be/5sm1q4ZkT6Y'
+      };
+      window.open(videos[mission], '_blank');
+    }
+  </script>
+</body>
+</html>
